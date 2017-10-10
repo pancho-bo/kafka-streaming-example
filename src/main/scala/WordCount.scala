@@ -54,14 +54,14 @@ object WordCount extends App {
 
   val builder: KStreamBuilder = new KStreamBuilder
   val textLines: KStream[String, String] =
-    builder.stream[String, String](config.getString("kafka.topics.input"))
+    builder.stream[String, String](config.getString("kafka.topics.count.input"))
   val wordCounts: KTable[String, JLong] = textLines
     .flatMapValues(l => l.toLowerCase().split("\\W+").toIterable.asJava)
     .groupBy((_, word) => word)
     .count(config.getString("kafka.store"))
 
   wordCounts.to(Serdes.String(), Serdes.Long(),
-    config.getString("kafka.topics.output"))
+    config.getString("kafka.topics.count.output"))
 
 
   val streams: KafkaStreams = new KafkaStreams(builder, props)

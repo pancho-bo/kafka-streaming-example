@@ -6,4 +6,4 @@ kafka-console-consumer --bootstrap-server 127.0.0.1:9092 \
  --skip-message-on-error \
  --formatter kafka.tools.DefaultMessageFormatter \
  --property print.key=true --property print.value=true \
- --from-beginning \
+ --from-beginning
