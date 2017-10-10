@@ -2,7 +2,7 @@
 
 1. Start zookeeper and kafka
 ```sh
-brew instal zookeeper kafka
+brew install zookeeper kafka
 brew services start zookeeper
 brew services start kafka
 ```
