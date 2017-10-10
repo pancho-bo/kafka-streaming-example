@@ -36,3 +36,15 @@ brew services start kafka
 5. Wait for a minute
 6. Send some random messages to producer 
 7. Get more realtime counts by minute `http GET http://127.0.0.1:8080`
+
+## JoinCounts with KStream to KTable join
+1. ```sbt runMain WordCount```
+2. ```sbt runMain JoinCounts```
+3. Start wordcount producer `./start_count_producer`
+4. Start joincount producer `./start_join_producer`
+5. Start joincount consumer `./start_join_consumer`
+6. Send message to join producer `{"word": "hello"}`
+7. No result in joincount consumer
+8. Send message to wordcount producer `hello and hello world`
+9. Wait for stream to update
+10. Output json will contain current word count `{"word":"hello","count":2}`
