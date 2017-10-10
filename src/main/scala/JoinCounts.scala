@@ -16,6 +16,8 @@ object JoinCounts extends App {
 
   val config = ConfigFactory.load()
 
+  implicit val formats = DefaultFormats
+
   val props: Properties = {
     val p = new Properties()
     p.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-map")
@@ -35,16 +37,16 @@ object JoinCounts extends App {
 
   val mappedLines: KStream[String,String] = textLines.flatMap { (_,v) =>
     parseOpt(v)
-//      .filter(json => (json \ "word") != JNothing)
-      .map(s => new KeyValue(compact(render(s \ "word")), compact(render(s))))
+      .filter(json => (json \ "word") != JNothing)
+      .map { s => new KeyValue((s \ "word").extract[String], compact(render(s))) }
       .toIterable
       .asJava
   }
 
   val joinedLines: KStream[String,String] =
     mappedLines
-    .join(wordCounts,
-      (x: String, y: JavaLong) => compact(render(parse(x) ++ ("count" -> JLong(y)))))
+    .join(wordCounts, { (x: String, y: JavaLong) =>
+      compact(render(parse(x).extract[JObject] ~ ("count" -> JLong(y))))})
 
   joinedLines.to(Serdes.String(), Serdes.String(),
     config.getString("kafka.topics.join.output"))
