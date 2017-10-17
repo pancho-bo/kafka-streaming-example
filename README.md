@@ -1,4 +1,4 @@
-# kaka-streaming-example
+# kafka-streaming-example
 
 1. Start zookeeper and kafka
 ```sh
